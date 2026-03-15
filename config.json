@@ -1,0 +1,8 @@
+{
+	"botName": "Example_bot",
+	"version": "1.0.2",
+	"author": "Freelancer",
+	"entryFile": "./src/main.mq5",
+	"outputDir": "./dist",
+	"mt5EditorPath": "C:\\Program Files\\MetaTrader 5\\metaeditor64.exe"
+}
