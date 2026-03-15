@@ -114,39 +114,7 @@ int OnInit() {
 
 **Features:**
 - ✅ Recursive imports
-- ✅ Circular dependency detection (coming soon)
 - ✅ Automatic MT5 compilation
-- ✅ Smart caching (coming soon)
-
-## 📊 Development Roadmap
-
-See [TODO.md](./TODO.md) for detailed development plans.
-
-### What We're Building (Priorities)
-
-#### Phase 1: Core Quality & Stability (Weeks 1-2)
-- [ ] Comprehensive unit & integration tests
-- [ ] Circular dependency detection
-- [ ] Input validation & error handling
-- [ ] Better error messages with line numbers
-
-#### Phase 2: Developer Experience (Weeks 3-4)
-- [ ] Multi-profile configuration (dev/staging/prod)
-- [ ] Development server with real-time feedback
-- [ ] Project templates and scaffolding
-- [ ] Comprehensive documentation
-
-#### Phase 3: Advanced Features (Weeks 5-8)
-- [ ] Module versioning & namespacing
-- [ ] Parallel compilation
-- [ ] Backtest integration
-- [ ] Git integration & versioning
-
-#### Phase 4: Professional Features (Weeks 9+)
-- [ ] Monitoring & analytics dashboard
-- [ ] Security & compliance scanning
-- [ ] Package management (npm-style)
-- [ ] Cloud build support
 
 ## 🎓 Example: Creating Your First EA
 
@@ -264,18 +232,6 @@ Performance | Optimize file caching
 ## 📊 Project Statistics
 
 - **Language**: JavaScript/MQL5
-- **Lines of Code**: 100+ (core bundler)
-- **Dependencies**: 4 (lightweight)
-- **Target Users**: Quantitative traders, EA developers
-- **Estimated Market**: 10K+ traders globally
-
-## 💡 Business Model (Future)
-
-- 🆓 **Open Source Core**: Free bundler for everyone
-- 💳 **Premium Templates**: Pre-built EA templates (RSI, MA, Grid, etc.)
-- ☁️ **Cloud Builds**: Hosted compilation service
-- 📊 **Backtest SaaS**: Cloud backtesting platform
-- 📚 **Educational Content**: Video tutorials and courses
 
 ## 📚 Resources
 
