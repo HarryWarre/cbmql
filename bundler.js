@@ -35,7 +35,7 @@ function loadConfig() {
 
 const importedFiles = new Set();
 
-function processFile(filePath, rootDir) {
+function processFile(filePath, rootDir, importStack = []) {
   const absolutePath = path.resolve(rootDir, filePath);
   
   if (!fs.existsSync(absolutePath)) {
@@ -43,7 +43,17 @@ function processFile(filePath, rootDir) {
     process.exit(1);
   }
 
-  // Duplicate Guard
+  // Circular Import Detection
+  if (importStack.includes(absolutePath)) {
+    console.error(chalk.red('\n[Error] Circular import detected:'));
+    const chain = [...importStack, absolutePath]
+      .map(p => path.relative(process.cwd(), p))
+      .join('\n-> ');
+    console.error(chalk.yellow(chain));
+    process.exit(1);
+  }
+
+  // Duplicate Guard (Common Dependency)
   if (importedFiles.has(absolutePath)) {
     return '';
   }
@@ -56,7 +66,7 @@ function processFile(filePath, rootDir) {
     if (importMatch) {
       const relativeImportPath = importMatch[1];
       const nextRootDir = path.dirname(absolutePath);
-      return processFile(relativeImportPath, nextRootDir);
+      return processFile(relativeImportPath, nextRootDir, [...importStack, absolutePath]);
     }
     return line;
   });
