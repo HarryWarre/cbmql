@@ -34,6 +34,26 @@ function loadConfig() {
 }
 
 const importedFiles = new Set();
+const functionsMap = new Map();
+
+function scanFunctions(content, filePath) {
+  const functionRegex = /^\s*(?:[A-Za-z_]\w*\s+)+([A-Za-z_]\w*)\s*\(/gm;
+  const keywords = new Set(['if', 'while', 'for', 'switch', 'return', 'else', 'sizeof', 'new', 'delete']);
+  
+  let match;
+  while ((match = functionRegex.exec(content)) !== null) {
+    const funcName = match[1];
+    if (!keywords.has(funcName)) {
+      if (!functionsMap.has(funcName)) {
+        functionsMap.set(funcName, []);
+      }
+      const files = functionsMap.get(funcName);
+      if (!files.includes(filePath)) {
+        files.push(filePath);
+      }
+    }
+  }
+}
 
 function processFile(filePath, rootDir, importStack = []) {
   const absolutePath = path.resolve(rootDir, filePath);
@@ -60,6 +80,7 @@ function processFile(filePath, rootDir, importStack = []) {
   importedFiles.add(absolutePath);
 
   let content = fs.readFileSync(absolutePath, 'utf8');
+  scanFunctions(content, path.relative(process.cwd(), absolutePath));
   const lines = content.split('\n');
   const processedLines = lines.map(line => {
     const importMatch = line.match(/^\/\/ @import "(.*)"/);
@@ -86,6 +107,28 @@ async function build() {
   console.log(chalk.cyan(`\n🚀 Building ${botName}...`));
 
   const finalContent = processFile(entryFile, __dirname);
+
+  // Check for duplicate functions
+  let hasDuplicates = false;
+  for (const [funcName, files] of functionsMap.entries()) {
+    if (files.length > 1) {
+      if (!hasDuplicates) {
+        console.error(chalk.red('\n[Error] Duplicate function detected:\n'));
+        hasDuplicates = true;
+      }
+      files.forEach(file => {
+        const fileName = path.basename(file);
+        console.error(chalk.yellow(`${fileName}_${funcName}`));
+      });
+      console.error(chalk.white('\nDetailed locations:'));
+      files.forEach(file => console.error(chalk.gray(`- ${file}`)));
+      console.error('');
+    }
+  }
+
+  if (hasDuplicates) {
+    process.exit(1);
+  }
 
   try {
     await fs.ensureDir(outputDir);
