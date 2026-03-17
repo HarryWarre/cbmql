@@ -37,7 +37,8 @@ const importedFiles = new Set();
 const functionsMap = new Map();
 
 function scanFunctions(content, filePath) {
-  const functionRegex = /^\s*(?:[A-Za-z_]\w*\s+)+([A-Za-z_]\w*)\s*\(/gm;
+  // Only match top-level functions (no leading whitespace) to avoid matching class methods
+  const functionRegex = /^(?:[A-Za-z_]\w*\s+)+([A-Za-z_]\w*)\s*\(/gm;
   const keywords = new Set(['if', 'while', 'for', 'switch', 'return', 'else', 'sizeof', 'new', 'delete']);
   
   let match;
@@ -98,6 +99,7 @@ function processFile(filePath, rootDir, importStack = []) {
 async function build() {
   loadConfig();
   importedFiles.clear();
+  functionsMap.clear();
 
   const botName = argv.name || config.botName || 'MQL5_Bot';
   const entryFile = path.resolve(__dirname, config.entryFile);
