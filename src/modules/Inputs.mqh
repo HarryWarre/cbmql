@@ -25,6 +25,7 @@ input string InpDCASteps         = "15,20,30,40";          // Quãng DCA pips m�
 input double InpDCARiskPct       = 2.0;     // Max % equity cho mỗi DCA
 input int    InpDCACooldownBars  = 3;       // Chờ tối thiểu N nến giữa các DCA
 input double InpMinDCAGap        = 0;     // Khoảng cách tối thiểu  DCA (pips)
+input bool   InpDCAIgnoreTrend   = false;   // DCA bất chấp trend (Chỉ L0 theo trend)
 
 input group "========= PYRAMID DCA (Thuận Trend) ========="
 input bool   InpEnablePyramid    = true;    // Bật Pyramid DCA dương
@@ -46,6 +47,7 @@ input bool   InpHedgeMergeVolume = false;   // Gộp số lượng lệnh Hedge 
 input int    InpTrimAfterDCA     = 2;       // Tỉa sau DCA level X
 input string InpTrimDCATPs       = "15,20,30,40";           // TP pips rổ tỉa
 input string InpTrimDCASteps     = "15,20,30,40";           // Quãng DCA pips rổ tỉa
+input bool   InpTrimIgnoreTrend  = false;   // Tỉa/Hedge DCA bất chấp trend
 input int    InpTrimZPeriod      = 50;      // Chu kỳ Z-Score
 input double InpTrimZThreshold   = 2.0;     // Mức Z-Score kích hoạt tỉa
 input int    InpTrimBEAfterDCA   = 2;       // Kích hòa vốn tỉa sau DCA level X
@@ -56,6 +58,11 @@ input bool   InpEnableMergedTP   = true;    // Bật gộp TP rổ chính
 input int    InpMergedTPLevel    = 3;       // Lấy TP của DCA level này để đóng hết
 input bool   InpEnableTrimMTP    = true;    // Bật gộp TP rổ tỉa
 input int    InpTrimMTPLevel     = 2;       // Lấy TP của tỉa level này để đóng rổ tỉa
+
+input group "========= PROFIT RECYCLER (Tái chế lợi nhuận) ========="
+input bool   InpEnableRecycler   = false;   // Bật tái chế lợi nhuận (Dùng lãi cũ diệt lỗ mới)
+input int    InpRecyclerLookback = 10;      // Số lệnh chốt lãi gần nhất để tính toán
+input bool   InpRecyclerReset    = true;    // Reset danh sách sau khi đã "thịt" lệnh lỗ
 
 input group "========= ADVANCED EXIT ========="
 input bool   InpCloseOnHighTFReversal = true; // Đóng toàn bộ lệnh khi khung lớn (HighTF) đảo chiều

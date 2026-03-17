@@ -2,6 +2,7 @@
 //| DCALogic.mqh - Core DCA Strategy Orchestration                   |
 //| Phoenix V3 - Ichimoku Trend DCA Bot                              |
 //+------------------------------------------------------------------+
+// @import "ProfitRecycler.mqh"
 
 void ManageDCA() {
    int posCount = CountPositions(0, false);
@@ -29,6 +30,9 @@ void ManageDCA() {
 
    // STEP 1.8: PYRAMID DCA
    if(posCount > 0) ManagePyramidDCA();
+
+   // STEP 1.9: PROFIT RECYCLER
+   if(InpEnableRecycler) ManageProfitRecycler();
 
    // Session / Spread guard (chỉ ảnh hưởng Entry & DCA mới)
    if(!m_session.CanTrade()) return;
@@ -95,7 +99,7 @@ void ManageDCA() {
    if(periodSec > 0 && (TimeCurrent() - g_lastDCATime) < InpDCACooldownBars * periodSec) return;
 
    // HEDGE DCA CONSTRAINT
-   if(InpEnableHedgeMode && g_trimActive && CountPositions(0, true) > 0) {
+   if(InpEnableHedgeMode && g_trimActive && CountPositions(0, true) > 0 && !InpDCAIgnoreTrend) {
       int sanyaku = SanyakuState(m_ichiBase, price, InpBaseTF);
       if(g_direction == 1 && sanyaku == -1) return;
       if(g_direction == -1 && sanyaku == 1) return;

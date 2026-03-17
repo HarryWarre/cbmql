@@ -43,3 +43,7 @@ datetime g_lastBar  = 0;
 int g_scoreBuy  = 0;
 int g_scoreSell = 0;
 int g_scoreNet  = 0;
+
+// Profit Recycler
+ulong    g_lastRecycleTicket = 0;   // Ticket cuối cùng của lệnh lãi đã được quét
+double   g_profitList[];            // Danh sách lãi của N lệnh gần nhất

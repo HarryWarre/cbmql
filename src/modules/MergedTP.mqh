@@ -50,6 +50,7 @@ void UpdateMergedTP(bool isTrim) {
 
    if(tpHit) {
       double profit = GetBasketProfit(isTrim);
+      if(profit <= 0) return; // YOLO Mode: Chỉ chốt khi có lãi, dù đã chạm Merged TP
 
       if(InpHedgeType != HEDGE_NONE) {
          profit = GetBasketProfit(false) + GetBasketProfit(true);

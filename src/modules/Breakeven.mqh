@@ -46,19 +46,19 @@ bool ManageBreakeven() {
    if(g_dcaLevel < InpBEAfterDCA) return false;
 
    double profit = GetBasketProfit(false);
-   double avgPrice = GetAvgPrice(false);
-   double currentPrice = (g_direction == 1) ? m_symbol.Bid() : m_symbol.Ask();
-   double pips = 0;
-   if(g_direction == 1) pips = (currentPrice - avgPrice) / (g_point * g_p2p);
-   else if(g_direction == -1) pips = (avgPrice - currentPrice) / (g_point * g_p2p);
-
-   if(pips >= InpBEPips) {
-      double lots = GetTotalLots(false);
+   double lots = GetTotalLots(false);
+   double pipValue = m_symbol.TickValue() * g_p2p;
+   double targetProfit = InpBEPips * pipValue * lots;
+   
+   if(profit >= targetProfit) {
       CloseBasket(false);
       g_cycleWins++;
       g_cycleProfit += profit;
+      
+      double realPips = (lots > 0 && pipValue > 0) ? profit / (lots * pipValue) : 0;
+      
       PrintFormat("BE MAIN #%d: %.1f pips (%.2f USD) | L%d | %d pos %.2f lot | Total: +%.2f",
-         g_cycleWins, pips, profit, g_dcaLevel, mainCount, lots, g_cycleProfit);
+         g_cycleWins, realPips, profit, g_dcaLevel, mainCount, lots, g_cycleProfit);
       g_direction=0; g_dcaLevel=0; g_lastDCATime=0; g_lastPyramidTime=0;
       return true;
    }
@@ -70,19 +70,19 @@ bool ManageTrimBreakeven() {
    if(g_trimDcaLevel < InpTrimBEAfterDCA) return false;
 
    double profit = GetBasketProfit(true);
-   double avgPrice = GetAvgPrice(true);
-   double currentPrice = (g_trimDirection == 1) ? m_symbol.Bid() : m_symbol.Ask();
-   double pips = 0;
-   if(g_trimDirection == 1) pips = (currentPrice - avgPrice) / (g_point * g_p2p);
-   else if(g_trimDirection == -1) pips = (avgPrice - currentPrice) / (g_point * g_p2p);
-
-   if(pips >= InpTrimBEPips) {
-      double lots = GetTotalLots(true);
+   double lots = GetTotalLots(true);
+   double pipValue = m_symbol.TickValue() * g_p2p;
+   double targetProfit = InpTrimBEPips * pipValue * lots;
+   
+   if(profit >= targetProfit) {
       int count = CountPositions(0, true);
       CloseBasket(true);
       g_cycleProfit += profit;
+      
+      double realPips = (lots > 0 && pipValue > 0) ? profit / (lots * pipValue) : 0;
+      
       PrintFormat("BE TRIM: %.1f pips (%.2f USD) | L%d | %d pos %.2f lot | Total: +%.2f",
-         pips, profit, g_trimDcaLevel, count, lots, g_cycleProfit);
+         realPips, profit, g_trimDcaLevel, count, lots, g_cycleProfit);
       g_trimActive = false; g_trimDirection = 0; g_trimDcaLevel = 0; g_lastTrimTime = 0;
       return true;
    }

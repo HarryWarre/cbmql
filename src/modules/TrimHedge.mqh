@@ -148,7 +148,7 @@ void ManageTrim() {
       double price = iClose(_Symbol, InpBaseTF, 1);
 
       // HEDGE DCA CONSTRAINT
-      if(InpEnableHedgeMode) {
+      if(InpEnableHedgeMode && !InpTrimIgnoreTrend) {
          int sanyaku = SanyakuState(m_ichiBase, price, InpBaseTF);
          if(g_trimDirection == 1 && sanyaku == -1) return;
          if(g_trimDirection == -1 && sanyaku == 1) return;

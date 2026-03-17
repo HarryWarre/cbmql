@@ -26,7 +26,7 @@ double GetBasketProfit(bool isTrim=false) {
       bool isTrimPos = (StringFind(PositionGetString(POSITION_COMMENT), "TRIM") >= 0);
       if(isTrimPos != isTrim) continue;
 
-      total += PositionGetDouble(POSITION_PROFIT) + PositionGetDouble(POSITION_SWAP);
+      total += PositionGetDouble(POSITION_PROFIT) + PositionGetDouble(POSITION_SWAP) + PositionGetDouble(POSITION_COMMISSION);
    }
    return total;
 }
@@ -132,4 +132,21 @@ double AdjustLots(double vol) {
    double mn = m_symbol.LotsMin(), mx = m_symbol.LotsMax(), st = m_symbol.LotsStep();
    vol = MathMax(mn, MathMin(mx, vol));
    return MathRound(vol / st) * st;
+}
+
+// Tìm ticket của lệnh đang lỗ nặng nhất
+ulong GetWorstPositionTicket(double &outLoss) {
+   ulong worstTicket = 0;
+   outLoss = 0;
+   for(int i=0; i<PositionsTotal(); i++) {
+      ulong tk = PositionGetTicket(i);
+      if(PositionGetInteger(POSITION_MAGIC)!=InpMagicNumber || PositionGetString(POSITION_SYMBOL)!=_Symbol) continue;
+      
+      double profit = PositionGetDouble(POSITION_PROFIT) + PositionGetDouble(POSITION_SWAP) + PositionGetDouble(POSITION_COMMISSION);
+      if(profit < outLoss) {
+         outLoss = profit;
+         worstTicket = tk;
+      }
+   }
+   return worstTicket;
 }
